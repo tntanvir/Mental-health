@@ -1,0 +1,582 @@
+{
+    "info": {
+        "name": "Mental Health App API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Auth",
+            "item": [
+                {
+                    "name": "Login",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/auth/login/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "login",
+                                ""
+                            ]
+                        },
+                        "description": "",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"test_logout@example.com\",\n    \"password\": \"password123\"\n}"
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+                                    "var jsonData = pm.response.json();",
+                                    "pm.test('Access token received', function () { pm.expect(jsonData).to.have.property('access'); });",
+                                    "if (jsonData.access) { pm.environment.set('access_token', jsonData.access); }",
+                                    "if (jsonData.refresh) { pm.environment.set('refresh_token', jsonData.refresh); }"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get User Profile",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/auth/user/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "user",
+                                ""
+                            ]
+                        },
+                        "description": ""
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+                                    "var jsonData = pm.response.json();",
+                                    "pm.test('Email matches', function () { pm.expect(jsonData.email).to.eql('test_logout@example.com'); });"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Refresh Token",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/auth/token/refresh/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "token",
+                                "refresh",
+                                ""
+                            ]
+                        },
+                        "description": "",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"refresh\": \"{{refresh_token}}\"\n}"
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.access) { pm.environment.set('access_token', jsonData.access); }"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Logout",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/auth/logout/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "logout",
+                                ""
+                            ]
+                        },
+                        "description": "",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"token\": \"{{refresh_token}}\"\n}"
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Daily Checking",
+            "item": [
+                {
+                    "name": "Create Daily Checking",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/daily_checking/daily-checking/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "daily_checking",
+                                "daily-checking",
+                                ""
+                            ]
+                        },
+                        "description": "",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"feeling\": \"Happy\",\n    \"sleeping_quality\": \"Good\",\n    \"note\": \"Feeling great today!\"\n}"
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 201', function () { pm.response.to.have.status(201); });",
+                                    "var jsonData = pm.response.json();",
+                                    "pm.environment.set('checking_id', jsonData.id);"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "List Daily Checkings",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/daily_checking/daily-checking/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "daily_checking",
+                                "daily-checking",
+                                ""
+                            ]
+                        },
+                        "description": ""
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+                                    "var jsonData = pm.response.json();",
+                                    "pm.expect(jsonData).to.be.an('array');"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get AI Questions",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/daily_checking/ai_questions",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "daily_checking",
+                                "ai_questions"
+                            ]
+                        },
+                        "description": "",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"feelings\": \"Anxious\"\n}"
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+                                    "var jsonData = pm.response.json();",
+                                    "pm.expect(jsonData).to.have.property('questions');"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Chatbot",
+            "item": [
+                {
+                    "name": "Create Chat Session",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/chatbot/sessions/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "chatbot",
+                                "sessions",
+                                ""
+                            ]
+                        },
+                        "description": "",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"title\": \"My Therapy Session\"\n}"
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 201', function () { pm.response.to.have.status(201); });",
+                                    "var jsonData = pm.response.json();",
+                                    "pm.environment.set('session_id', jsonData.id);",
+                                    "pm.test('Title matches', function () { pm.expect(jsonData.title).to.eql('My Therapy Session'); });"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "List Chat Sessions",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/chatbot/sessions/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "chatbot",
+                                "sessions",
+                                ""
+                            ]
+                        },
+                        "description": ""
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+                                    "var jsonData = pm.response.json();",
+                                    "pm.expect(jsonData).to.be.an('array');"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Chat Session Detail",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/chatbot/sessions/{{session_id}}/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "chatbot",
+                                "sessions",
+                                "{{session_id}}",
+                                ""
+                            ]
+                        },
+                        "description": ""
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+                                    "var jsonData = pm.response.json();",
+                                    "pm.expect(jsonData.id).to.eql(pm.environment.get('session_id'));"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Send Message to Session",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/chatbot/sessions/{{session_id}}/message/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "chatbot",
+                                "sessions",
+                                "{{session_id}}",
+                                "message",
+                                ""
+                            ]
+                        },
+                        "description": "",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"message\": \"I am feeling a bit stressed today.\",\n    \"location\": \"New York, USA\"\n}"
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 201', function () { pm.response.to.have.status(201); });",
+                                    "var jsonData = pm.response.json();",
+                                    "pm.test('Bot response exists', function () { pm.expect(jsonData).to.have.property('bot_response'); });"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Delete Chat Session",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/chatbot/sessions/{{session_id}}/",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "chatbot",
+                                "sessions",
+                                "{{session_id}}",
+                                ""
+                            ]
+                        },
+                        "description": ""
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status code is 204', function () { pm.response.to.have.status(204); });"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://127.0.0.1:8000",
+            "type": "string"
+        },
+        {
+            "key": "access_token",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "refresh_token",
+            "value": "",
+            "type": "string"
+        }
+    ]
+}
