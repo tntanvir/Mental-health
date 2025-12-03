@@ -25,7 +25,7 @@ app.autodiscover_tasks()
 @app.task(bind=True)
 def debug_task(self):
     print(f'Request: {self.request!r}')
-app.conf.broker_url = "redis://localhost:6379/0"
+app.conf.broker_url = "redis://localhost:6378/0"
 
 
 app.conf.beat_schedule = {

@@ -220,6 +220,25 @@ def generate_collection():
 
     collection["item"].append(report_folder)
 
+    # --- Notifications Folder ---
+    notifications_folder = {"name": "Notifications", "item": []}
+
+    # List Notifications
+    list_notif_tests = [
+        "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+        "var jsonData = pm.response.json();",
+        "pm.expect(jsonData).to.have.property('results');"
+    ]
+    notifications_folder["item"].append(create_item("List Notifications", "GET", "/api/notifications/list/", tests=list_notif_tests))
+
+    # Mark Notification Read
+    mark_read_tests = [
+        "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });"
+    ]
+    notifications_folder["item"].append(create_item("Mark Notification Read", "GET", "/api/notifications/list/1/", tests=mark_read_tests))
+
+    collection["item"].append(notifications_folder)
+
     with open('Mental_Health_API.postman_collection.json', 'w') as f:
         json.dump(collection, f, indent=4)
 

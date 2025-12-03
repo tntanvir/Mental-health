@@ -27,7 +27,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['testserver', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='testserver,localhost,127.0.0.1').split(',')
 
 
 # Application definition
@@ -56,11 +56,13 @@ INSTALLED_APPS = [
     'drf_spectacular', # Added as per instruction's implied change
     "django_celery_beat",
     'notifications',
+
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+        'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -89,11 +91,12 @@ TEMPLATES = [
 WSGI_APPLICATION = 'Mental_health.wsgi.application'
 ASGI_APPLICATION = 'Mental_health.asgi.application'
 
+
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
+            "hosts": [(config('CHANNEL_LAYER_HOST', default='127.0.0.1'), config('CHANNEL_LAYER_PORT', default=6378, cast=int))],
         },
     },
 }
@@ -143,6 +146,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -252,8 +260,8 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 
 
 
-CELERY_BROKER_URL = "redis://localhost:6379/0"      # replace with localhost:6379/0 for local dev
-CELERY_RESULT_BACKEND = "redis://localhost:6379/1"
+CELERY_BROKER_URL = config('CELERY_BROKER_URL', default="redis://localhost:6378/0")
+CELERY_RESULT_BACKEND = config('CELERY_RESULT_BACKEND', default="redis://localhost:6378/1")
 
 # Serializers & timezone
 CELERY_ACCEPT_CONTENT = ["json"]

@@ -126,3 +126,38 @@ Connect to this endpoint to receive real-time notifications.
             "created_at": "2023-10-27T10:00:00Z"
         }
         ```
+
+## Docker Support
+
+You can also run the entire application stack using Docker.
+
+### Prerequisites
+*   Docker
+*   Docker Compose
+
+### Running with Docker
+
+1.  **Build and start the containers:**
+    ```bash
+    docker compose up --build
+    ```
+
+2.  **Access the application:**
+    *   The API is available at `http://localhost:8000/`
+    *   Redis is running on port `6380`
+
+3.  **Stop the containers:**
+    ```bash
+    docker compose down
+    ```
+
+4.  **Run migrations (if needed manually):**
+    The entrypoint script automatically runs migrations on startup. To run them manually:
+    ```bash
+    docker compose exec web python manage.py migrate
+    ```
+
+5.  **Create superuser:**
+    ```bash
+    docker compose exec web python manage.py createsuperuser
+    ```
